@@ -34,31 +34,17 @@ class vm(object):
         error = 0
         while(p.poll() == None):
             A = p.stdout.readline()
-            # print('stdout',len(A))
             B = p.stderr
             if(len(A) > 0):
                 print(str(A))
-        # print(B)
         for line in B:
             error = 1
             print(line)
-        # while(p.poll()==None):
-        #     B = p.stderr.readline()
-        #     # print('stderr',len(B))
-        #     if(len(B) > 0):
-        #         error = 1
-        #         print(str(B))
 
         if(error==0):
             print('{} end running command with success'.format(vmPrefix))
         else:
             print('{} end running command FAIL'.format(vmPrefix))
-
-                # p = call(self.cmd, stdin=PIPE, stdout=None, stderr=PIPE, shell=self.b_shell)
-        # if(p==0):
-        #     print('{} end running command with success'.format(vmPrefix))
-        # else:
-        #     print('{} end running command FAIL'.format(vmPrefix))
         self.cmd = self.newCmd
 
     def command(self,inp):
@@ -89,7 +75,7 @@ class vm(object):
         if(not self.isValid(container)):
             print('{} invalid container name'.format(vmPrefix))
             sys.exit()
-        print(os.getcwd())
+
 
 
         path = os.path.dirname(os.path.realpath(__main__.__file__))
@@ -105,12 +91,12 @@ class vm(object):
 
         else:
             CACHE_FILE_FOLDER = os.environ.get("HOME")
-        print(path)
+
         path = path.replace(CACHE_FILE_FOLDER,os.path.join('//c/Users',os.environ["USERNAME"]))
         path = path.replace('\\','/')
-        print(path)
+
         pyScript = pyScript.replace('\\','/')
-        print(pyScript)
+
         # print('//c/Users/myUsername/Documents/myCurrentWorkingFolder')/
         self.cmd = self.cmd + [
             'docker', 'run',
@@ -128,5 +114,20 @@ class vm(object):
             '-v',
             '$(docker ps -a -q -f status=exited)'
         ]
-        print(self.cmd)
+        # print(self.cmd)
         self.b_shell = False
+
+
+if __name__ == "__main__":
+
+    print('run R code')
+    myVM = vm('default')
+    myVM.command_docker('r-base','test.R','Rscript')
+    myVM.run()
+
+
+    print('run tensorflow with keras code')
+    myVM.command_docker('elynn/keras-tensorflow','test.py','python')
+    myVM.run()
+
+    print('success')
